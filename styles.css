@@ -1,0 +1,375 @@
+/* =========================================================================
+   BASE & TYPOGRAPHY
+========================================================================= */
+:root {
+  --bg-dark: #0d0d0d;
+  --bg-center: #191919;
+  --lime-accent: #8bc34a;
+  --crimson-accent: #9e1b22;
+  --gold-foil: #d4af37;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  font-family: 'Montserrat', sans-serif;
+  overscroll-behavior: none;
+}
+
+.font-serif-luxury {
+  font-family: 'Cinzel', serif;
+}
+
+.font-sans-clean {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.font-script-luxury {
+  font-family: 'Great Vibes', cursive;
+}
+
+/* Signature Charcoal Radial Background */
+.luxury-bg {
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(42, 42, 42, 0.42) 0%,
+      rgba(16, 16, 16, 0.92) 58%,
+      #0a0a0a 100%
+    ),
+    #0d0d0d;
+}
+
+/* Metallic Silver Gradient Text */
+.silver-gradient-text {
+  background: linear-gradient(180deg, #ffffff 0%, #d4d4d4 48%, #8e8e8e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =========================================================================
+   STAGE 1: 3D INTERACTIVE ENVELOPE
+========================================================================= */
+.envelope-scene {
+  perspective: 1200px;
+  width: min(330px, 86vw);
+  height: 220px;
+  position: relative;
+}
+
+.envelope-body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #1b1b1b 0%, #0e0e0e 100%);
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(212, 175, 55, 0.35);
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+}
+
+.envelope-scene:hover .envelope-body {
+  transform: translateY(-4px);
+}
+
+.envelope-gold-frame {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Rising Inner Preview Card */
+.envelope-inner-card {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  height: 185px;
+  background: linear-gradient(180deg, #1d1d1d 0%, #101010 100%);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.6);
+}
+
+/* Envelope Pocket Triangles */
+.envelope-flap-left {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #181818 0%, #101010 100%);
+  clip-path: polygon(0 0, 52% 52%, 0 100%);
+  border-radius: 12px 0 0 12px;
+  z-index: 3;
+}
+
+.envelope-flap-right {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(225deg, #181818 0%, #101010 100%);
+  clip-path: polygon(100% 0, 48% 52%, 100% 100%);
+  border-radius: 0 12px 12px 0;
+  z-index: 3;
+}
+
+.envelope-flap-bottom {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #141414 0%, #1e1e1e 100%);
+  clip-path: polygon(0 100%, 50% 46%, 100% 100%);
+  border-radius: 0 0 12px 12px;
+  z-index: 4;
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Top Flap (Rotates in 3D on Open) */
+.envelope-flap-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 128px;
+  background: linear-gradient(180deg, #242424 0%, #151515 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  border-radius: 12px 12px 0 0;
+  z-index: 7;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.7));
+}
+
+/* Recipient Name Plaque */
+.envelope-recipient-box {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  text-align: center;
+  background: rgba(10, 10, 10, 0.78);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 6px 16px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+/* 3D Crimson Wax Seal */
+.wax-seal {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 32% 28%, #c92a32 0%, #9e1b22 55%, #5c0c10 100%);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.75),
+    inset 0 2px 4px rgba(255, 190, 190, 0.35),
+    inset 0 -3px 6px rgba(40, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 8;
+  border: 2px solid #7d1218;
+}
+
+.wax-seal-inner {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(212, 175, 55, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* =========================================================================
+   STAGE 2: SWIPEABLE 3-CARD DECK
+========================================================================= */
+.cards-track {
+  display: flex;
+  width: 300vw;
+  height: 100dvh;
+  will-change: transform;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.cards-track:active {
+  cursor: grabbing;
+}
+
+.invite-card {
+  width: 100vw;
+  height: 100dvh;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gentle Pendulum Sway on Top Ornaments */
+@keyframes pendulumSway {
+  0%,
+  100% {
+    transform: rotate(-1.2deg);
+  }
+  50% {
+    transform: rotate(1.2deg);
+  }
+}
+
+.pendulum-sway {
+  transform-origin: top center;
+  animation: pendulumSway 5.5s ease-in-out infinite;
+}
+
+/* Subtle Metallic Shimmer Sweep on Crest */
+.crest-shimmer-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.crest-shimmer-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 65%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 80%
+  );
+  transform: skewX(-20deg);
+  animation: shimmerSweep 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  0%,
+  65% {
+    left: -120%;
+  }
+  100% {
+    left: 160%;
+  }
+}
+
+/* Embossed Dark Snowflakes matching Reference Images */
+.snowflake-deco {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.045);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.snowflake-bl-1 {
+  bottom: 135px;
+  left: 18px;
+  font-size: 54px;
+}
+
+.snowflake-bl-2 {
+  bottom: 85px;
+  left: 8px;
+  font-size: 32px;
+}
+
+.snowflake-br-1 {
+  bottom: 148px;
+  right: 22px;
+  font-size: 34px;
+}
+
+.snowflake-br-2 {
+  bottom: 86px;
+  right: 12px;
+  font-size: 48px;
+}
+
+.snowflake-bc-1 {
+  bottom: 132px;
+  left: 38%;
+  font-size: 44px;
+}
+
+.snowflake-bc-2 {
+  bottom: 88px;
+  left: 34%;
+  font-size: 30px;
+}
+
+/* Card 3 Countdown Boxes */
+.countdown-box {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+  padding: 10px 4px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
+.countdown-num {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.countdown-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a3a3a3;
+  margin-top: 3px;
+}
+
+/* Sleek Dark-Toned Google Maps Embed */
+.map-dark-filter {
+  filter: invert(90%) hue-rotate(180deg) contrast(92%) saturate(85%);
+}
+
+/* Minimal Pagination Dots */
+.page-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.28);
+  transition: all 0.3s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.page-dot.active {
+  width: 22px;
+  background: #8bc34a;
+  box-shadow: 0 0 8px rgba(139, 195, 74, 0.6);
+}
