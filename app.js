@@ -5,7 +5,7 @@
    3. Ambient glitter dust (canvas)
    4. Audio: music-box synth + SFX (Web Audio, no files)
    5. Envelope opening
-   6. Swipe deck (touch / mouse / wheel / keys)
+   6. Vertically scrollable four-card deck
    7. Countdown, QR, map
    8. Host link generator (?admin=1)
    ========================================================= */
@@ -132,32 +132,26 @@
       <circle cx="116" cy="94" r="7" fill="#d9b45a"/><circle cx="198" cy="94" r="7" fill="#d9b45a"/>`);
   }
 
-  // Snowflake silhouettes + gold curling ribbons
+  // Snowflake silhouettes
   function flakeSVG() {
     let a = "";
     for (let i = 0; i < 6; i++) a += `<g transform="rotate(${i * 60} 50 50)"><path d="M50 50 V6 M50 28 L38 16 M50 28 L62 16 M50 40 L41 32 M50 40 L59 32" /></g>`;
     return svg(100, 100, `<g stroke="#7b6140" stroke-width="3" stroke-linecap="round" fill="none">${a}</g>`);
   }
   const FLAKES = [[7, 66, 1], [3, 76, .6], [11, 81, 1.1], [3, 90, .8], [86, 69, .75], [90, 80, 1.1]];
-  const RIB = [[95, 205, 0, 1], [185, 450, 25, 1.1], [125, 625, -15, 1], [880, 255, 160, 1], [790, 400, 190, 1.1], [735, 675, 20, .9], [870, 540, 200, .8]];
-  function ribbonsSVG() {
-    const id = "g" + (++uid);
-    const p = `M0 0 C34 -26 74 -8 52 22 C34 46 -8 40 6 76 C16 100 52 96 70 84`;
-    return `<defs><linearGradient id="${id}" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#8a6a25"/><stop offset=".5" stop-color="#f3dc9a"/><stop offset="1" stop-color="#b8892f"/></linearGradient></defs>` +
-      RIB.map(([x, y, r, s]) => `<g class="rib" transform="translate(${x} ${y}) rotate(${r}) scale(${s * .8})"><path d="${p}" fill="none" stroke="url(#${id})" stroke-width="4.5" stroke-linecap="round"/><path d="${p}" fill="none" stroke="#fff6cf" stroke-opacity=".6" stroke-width="1.2" transform="translate(-1.5 -1.5)"/></g>`).join("");
-  }
 
   function mountArt() {
     $$("[data-baubles]").forEach(mountBaubles);
     $$("[data-crest] .fb").forEach((el) => (el.innerHTML = crestSVG()));
-    $$("[data-ribbons]").forEach((el) => (el.innerHTML = ribbonsSVG()));
     $$("[data-fig=man]").forEach((el) => (el.innerHTML = manSVG()));
     $$("[data-fig=woman]").forEach((el) => (el.innerHTML = womanSVG()));
-    $$(".sheet").forEach((sh) => FLAKES.forEach(([x, y, s]) => {
-      const d = document.createElement("div"); d.className = "flake"; d.style.cssText = `left:${x}%;top:${y}%;width:${11 * s}cqw;transform:rotate(${x * 7}deg)`; d.innerHTML = flakeSVG(); sh.prepend(d);
+    $$(".sheet").forEach((sh) => FLAKES.forEach(([x, y, s], i) => {
+      const d = document.createElement("div"); d.className = "flake";
+      d.style.cssText = `left:${x}%;top:${y}%;width:${11 * s}cqw;--flake-angle:${x * 7}deg;--flake-delay:${-i * 1.25}s;--flake-duration:${8 + (i % 3) * 1.5}s`;
+      d.innerHTML = flakeSVG(); sh.prepend(d);
     }));
-    $("#introBaubles").innerHTML = baublesSVG(); startSway($("#introBaubles"));
-    if (!reduce && window.gsap) $$(".rib").forEach((g, i) => gsap.to(g, { y: "+=14", rotation: "+=6", duration: 3 + (i % 4) * .6, ease: "sine.inOut", yoyo: true, repeat: -1, delay: -i }));
+    const introB = $("#introBaubles");
+    if (introB) { introB.innerHTML = baublesSVG(); startSway(introB); }
   }
 
   /* ---------- 3. Ambient glitter dust (canvas) ---------- */
@@ -167,11 +161,11 @@
   function sizeDust() {
     dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
     cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const col = Math.min(W, H * 933 / 1600), left = (W - col) / 2, n = W < 600 ? 110 : 170;
+    const col = Math.min(W, H * 933 / 1600), left = (W - col) / 2, n = W < 600 ? 160 : 220;
     dust = Array.from({ length: n }, (_, i) => {
       const side = i % 2 ? 1 : -1;                                   // left / right margins of the card column
       const off = Math.pow(Math.random(), 1.6) * col * .22;
-      return { x: side < 0 ? left + off : left + col - off, y: Math.random() * H, r: .4 + Math.random() * 1.5,
+      return { x: side < 0 ? left + off : left + col - off, y: Math.random() * H, r: .4 + Math.random() * 1.2,
         c: DUST_COLORS[(Math.random() * DUST_COLORS.length) | 0], vy: .06 + Math.random() * .18, ph: Math.random() * 6.28, sp: .6 + Math.random() * 1.8 };
     });
   }
@@ -179,10 +173,10 @@
     cx.clearRect(0, 0, W, H);
     for (const p of dust) {
       p.y += p.vy; if (p.y > H + 4) p.y = -4;
-      const a = .25 + .65 * Math.abs(Math.sin(t / 1000 * p.sp + p.ph));
+      const a = .08 + .72 * Math.abs(Math.sin(t / 1000 * p.sp + p.ph));
       cx.fillStyle = `rgba(${p.c},${a})`; cx.beginPath(); cx.arc(p.x + Math.sin(t / 2500 + p.ph) * 3, p.y, p.r, 0, 6.283); cx.fill();
     }
-    requestAnimationFrame(drawDust);
+    if (!reduce) requestAnimationFrame(drawDust);
   }
 
   /* ---------- 4. Audio: synthesised music-box + SFX ---------- */
@@ -265,40 +259,53 @@
   let opened = false;
   function burst(host, x, y) {
     if (reduce) return;
-    for (let i = 0; i < 46; i++) {
+    for (let i = 0; i < 52; i++) {
       const p = document.createElement("i"), s = 3 + Math.random() * 5;
-      p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${s}px;height:${s}px;border-radius:50%;pointer-events:none;z-index:50;background:${["#f3dc9a", "#d9b45a", "#fff6cf", "#8bc34a"][i % 4]};box-shadow:0 0 6px #d9b45a`;
-      host.appendChild(p); const a = Math.random() * 6.283, d = 80 + Math.random() * 230;
-      gsap.to(p, { x: Math.cos(a) * d, y: Math.sin(a) * d - 60, opacity: 0, scale: .2, duration: 1.3 + Math.random(), ease: "power2.out", onComplete: () => p.remove() });
+      p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${s}px;height:${s}px;border-radius:50%;pointer-events:none;z-index:50;background:${["#f3dc9a", "#d9b45a", "#fff6cf", "#e53935", "#8bc34a"][i % 5]};box-shadow:0 0 8px rgba(217,180,90,.8)`;
+      host.appendChild(p); const a = Math.random() * 6.283, d = 70 + Math.random() * 220;
+      gsap.to(p, { x: Math.cos(a) * d, y: Math.sin(a) * d - 50, opacity: 0, scale: .2, duration: 1.8 + Math.random() * 1.2, ease: "power2.out", onComplete: () => p.remove() });
     }
   }
   function openEnvelope() {
     if (opened) return; opened = true;
-    gsap.killTweensOf(".env"); gsap.to(".env", { rotationX: 0, y: 0, duration: .4 });
-    initAudio(); if (ac) { ac.resume(); sfxSwoosh(); sfxChime(); startMusic(); }
-    $("#tap").style.animation = "none"; gsap.to("#tap", { opacity: 0, duration: .3 });
+    gsap.killTweensOf(".env");
+    gsap.to(".env", { rotationX: 0, y: 0, duration: .8, ease: "power2.out" });
+    initAudio(); if (ac) { ac.resume(); sfxChime(); startMusic(); }
+    $("#tap").style.animation = "none"; gsap.to("#tap", { opacity: 0, duration: .6, ease: "power2.out" });
     const seal = $("#seal").getBoundingClientRect();
     const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
-    tl.to("#seal", { scale: 1.25, duration: .18, ease: "power2.out" }).to("#seal", { scale: 0, opacity: 0, duration: .25, ease: "power2.in" }, ">")
-      .add(() => burst($("#intro"), seal.left + seal.width / 2, seal.top + seal.height / 2), "<.1")
-      .to("#flap", { rotationX: 180, duration: .95, ease: "power2.inOut" }, "<.1")
-      .set("#flap", { zIndex: 1 }, "<.45").to("#flapEdge", { opacity: 0, duration: .2 }, "<")
-      .to("#letter", { yPercent: -88, duration: 1.05, ease: "power3.out" }, ">-.1")
-      .to(".scene", { scale: 1.25, duration: .9 }, "<.3")
-      .to("#intro", { opacity: 0, duration: .7 }, ">-.1")
-      .add(showDeck, "<.2");
+    tl.to("#seal", { scale: 1.2, duration: .45, ease: "power2.out" })
+      .add(() => burst($("#intro"), seal.left + seal.width / 2, seal.top + seal.height / 2), "-=.1")
+      .to("#seal", { scale: .3, opacity: 0, duration: .55, ease: "power2.in" })
+      .to("#flap", { rotationX: 180, duration: 1.8, ease: "power2.inOut" }, "-=.2")
+      .set("#flap", { zIndex: 1 }, "<.9")
+      .to("#flapEdge", { opacity: 0, duration: .5, ease: "power1.inOut" }, "<.5")
+      .add(() => { if (ac) sfxSwoosh(); }, "+=.1")
+      .to("#letter", { yPercent: -92, duration: 2.0, ease: "power2.out" }, "<")
+      .to(".label", { opacity: .35, duration: 1.2, ease: "power1.out" }, "<.3")
+      .to({}, { duration: .8 })
+      .to(".scene", { scale: 1.45, y: 35, duration: 1.6, ease: "power2.inOut" })
+      .to("#intro", {
+        opacity: 0,
+        duration: 1.3,
+        ease: "power2.inOut",
+        onStart: () => {
+          $("#intro").style.pointerEvents = "none";
+          showDeck();
+        }
+      }, "<.3");
   }
   $("#intro").addEventListener("click", openEnvelope);
   if (!reduce && window.gsap) gsap.to(".env", { y: -6, rotationX: 10, duration: 2.6, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
-  /* ---------- 6. Swipe deck ---------- */
-  const deck = $("#deck"), track = $("#track"), dots = $$("#dots button");
-  let idx = 0, vw = innerWidth, seen = false;
+  /* ---------- 6. Vertically scrollable four-card deck ---------- */
+  const deck = $("#deck"), cards = $$(".card"), dots = $$("#dots button");
+  let idx = 0, seen = false, scrollFrame = 0;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   // Staggered entrance when a card becomes active
   function activate(i) {
-    const card = $$(".card")[i], items = $$("[data-a]", card);
+    const card = cards[i], items = $$("[data-a]", card);
     gsap.killTweensOf(items);
     gsap.fromTo(items, { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: .85, stagger: .09, ease: "power3.out", delay: .12, clearProps: "transform,opacity" });
     if (i === 1) {
@@ -306,56 +313,52 @@
       gsap.fromTo("#figWoman", { x: 90, opacity: 0 }, { x: 0, opacity: 1, duration: 1.1, ease: "power3.out", delay: .3, clearProps: "transform,opacity" });
     }
   }
-  function snap(i, instant) {
-    const changed = i !== idx; idx = clamp(i, 0, 2);
-    gsap.to(track, { x: -idx * vw, duration: instant ? 0 : .85, ease: "back.out(1.15)", overwrite: true });
-    dots.forEach((d, k) => d.classList.toggle("a", k === idx));
-    if (changed) activate(idx);
+  function snap(i, instant = false) {
+    const target = cards[clamp(i, 0, cards.length - 1)];
+    const top = deck.scrollTop + target.getBoundingClientRect().top - deck.getBoundingClientRect().top;
+    deck.scrollTo({ top, behavior: instant || reduce ? "auto" : "smooth" });
   }
   dots.forEach((d, k) => d.addEventListener("click", () => snap(k)));
 
-  let sx = 0, sy = 0, bx = 0, st = 0, dragging = false, down = false, moved = false, lastX = 0, lastT = 0, vel = 0;
-  deck.addEventListener("pointerdown", (e) => {
-    if (e.target.closest("button,iframe") && e.target.closest("#dots")) return;
-    down = true; moved = false; dragging = false; sx = lastX = e.clientX; sy = e.clientY; st = lastT = performance.now(); bx = gsap.getProperty(track, "x"); vel = 0;
-    gsap.killTweensOf(track);
+  deck.addEventListener("scroll", () => {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      const marker = deck.getBoundingClientRect().top + deck.clientHeight * .45;
+      let active = 0;
+      cards.forEach((card, i) => { if (card.getBoundingClientRect().top <= marker) active = i; });
+      if (active === idx) return;
+      idx = active;
+      dots.forEach((d, k) => d.classList.toggle("a", k === idx));
+      activate(idx);
+    });
+  }, { passive: true });
+  addEventListener("keydown", (e) => {
+    if (deck.style.visibility !== "visible") return;
+    if (e.target instanceof Element && e.target.closest("input,textarea,select,button,[contenteditable='true']")) return;
+    if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); snap(idx + 1); }
+    if (e.key === "ArrowUp" || e.key === "PageUp") { e.preventDefault(); snap(idx - 1); }
+    if (e.key === "Home") { e.preventDefault(); snap(0); }
+    if (e.key === "End") { e.preventDefault(); snap(cards.length - 1); }
   });
-  deck.addEventListener("pointermove", (e) => {
-    if (!down) return; const dx = e.clientX - sx;
-    if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(e.clientY - sy)) { dragging = true; moved = true; deck.classList.add("drag"); try { deck.setPointerCapture(e.pointerId); } catch (_) {} }
-    if (!dragging) return;
-    const now = performance.now(); vel = (e.clientX - lastX) / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
-    let nx = bx + dx; const min = -2 * vw;
-    if (nx > 0) nx *= .35; else if (nx < min) nx = min + (nx - min) * .35;       // rubber-band edges
-    gsap.set(track, { x: nx });
-  });
-  const end = () => {
-    if (!down) return; down = false; deck.classList.remove("drag");
-    if (!dragging) return; dragging = false;
-    const dx = gsap.getProperty(track, "x") - bx;
-    let t = idx; if (Math.abs(dx) > vw * .18 || Math.abs(vel) > .45) t = idx + (dx < 0 || vel < -.45 ? 1 : -1);
-    snap(clamp(t, 0, 2));
-  };
-  deck.addEventListener("pointerup", end); deck.addEventListener("pointercancel", end);
-  deck.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
-  let wl = 0;
-  deck.addEventListener("wheel", (e) => {
-    e.preventDefault(); const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY, n = Date.now();
-    if (Math.abs(d) < 18 || n - wl < 700) return; wl = n; snap(idx + (d > 0 ? 1 : -1));
-  }, { passive: false });
-  addEventListener("keydown", (e) => { if (deck.style.visibility !== "visible") return; if (e.key === "ArrowRight") snap(idx + 1); if (e.key === "ArrowLeft") snap(idx - 1); });
-  addEventListener("resize", () => { vw = innerWidth; gsap.set(track, { x: -idx * vw }); sizeDust(); });
+  addEventListener("resize", sizeDust);
 
   function showDeck() {
-    $("#intro").classList.add("hidden");
     gsap.set(deck, { visibility: "visible" });
-    gsap.fromTo(deck, { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 1, ease: "power2.out" });
+    gsap.fromTo(deck, { opacity: 0, scale: 1.05 }, {
+      opacity: 1,
+      scale: 1,
+      duration: 1.4,
+      ease: "power2.out",
+      onComplete: () => {
+        $("#intro").classList.add("hidden");
+      }
+    });
     $("#mute").classList.add("on"); $("#dots").classList.add("on"); activate(0);
-    if (!seen) { seen = true; gsap.timeline({ delay: 2.2 }).fromTo("#hint", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: .6 })
-      .to("#hint", { x: -14, duration: .5, yoyo: true, repeat: 3, ease: "sine.inOut" }).to("#hint", { opacity: 0, duration: .6 }); }
+    if (!seen) { seen = true; gsap.timeline({ delay: 2.2 }).fromTo("#hint", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .6 })
+      .to("#hint", { y: -7, duration: .5, yoyo: true, repeat: 3, ease: "sine.inOut" }).to("#hint", { opacity: 0, duration: .6 }); }
   }
-  // dismiss hint on first swipe
-  deck.addEventListener("pointerdown", () => gsap.to("#hint", { opacity: 0, duration: .3, overwrite: true }), { once: true });
+  deck.addEventListener("scroll", () => gsap.to("#hint", { opacity: 0, duration: .3, overwrite: true }), { once: true, passive: true });
 
   /* ---------- 7. Countdown, QR, map ---------- */
   const target = Date.parse(CFG.eventTime);
@@ -403,8 +406,9 @@
 
   /* ---------- boot ---------- */
   function boot() {
-    mountArt(); sizeDust(); requestAnimationFrame(drawDust); mountQR(); tick(); setInterval(tick, 1000); initAdmin();
-    gsap.set(track, { x: 0 });
+    mountArt(); sizeDust();
+    if (reduce) drawDust(0); else requestAnimationFrame(drawDust);
+    mountQR(); tick(); setInterval(tick, 1000); initAdmin();
   }
   if (window.gsap) boot();
   else { window.addEventListener("load", () => { if (window.gsap) boot(); else { $("#intro").classList.add("hidden"); deck.style.cssText = "visibility:visible;opacity:1"; } }); }

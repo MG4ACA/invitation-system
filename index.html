@@ -23,7 +23,6 @@
 
 <!-- ============ STAGE 1 : ENVELOPE ============ -->
 <section id="intro" aria-label="Invitation envelope">
-  <div class="baubles" id="introBaubles"></div>
   <div class="scene">
     <div class="env" id="env">
       <div class="env-back"></div>
@@ -52,7 +51,6 @@
     <section class="card" id="c1">
       <div class="sheet">
         <div class="baubles" data-baubles></div>
-        <svg class="ribbons" data-ribbons viewBox="0 0 933 1600" preserveAspectRatio="none"></svg>
         <div class="abs t-we" data-a>WE ARE</div>
         <div class="abs t-inv silver" data-a>INVITING</div>
         <div class="abs t-join" data-a>YOU TO JOIN OUR</div>
@@ -72,7 +70,6 @@
     <section class="card" id="c2">
       <div class="sheet">
         <div class="baubles" data-baubles></div>
-        <svg class="ribbons" data-ribbons viewBox="0 0 933 1600" preserveAspectRatio="none"></svg>
         <div class="crest small" style="top:28%" data-a data-crest><div class="fb"></div><img src="assets/crest-25-years.png" alt="25 Years" onload="this.parentNode.classList.add('has-img')"><div class="shimmer"></div></div>
         <div class="abs dc-head silver" data-a>Dress Code</div>
         <div class="dc-list" data-a>
@@ -85,37 +82,92 @@
       </div>
     </section>
 
-    <!-- Card 3 : Countdown + map -->
+    <!-- Card 3 : Sample agenda -->
     <section class="card" id="c3">
       <div class="sheet">
-        <div class="baubles" data-baubles style="transform:scale(.5);transform-origin:top center"></div>
-        <svg class="ribbons" data-ribbons viewBox="0 0 933 1600" preserveAspectRatio="none"></svg>
-        <div class="crest small" style="top:14.2%;width:30cqw" data-a data-crest><div class="fb"></div><img src="assets/crest-25-years.png" alt="25 Years" onload="this.parentNode.classList.add('has-img')"><div class="shimmer"></div></div>
-        <div class="abs c3-head silver" data-a style="top:31.4%">Countdown &amp; Location</div>
-        <div class="abs c3-sub" data-a style="top:36%">20 December 2026 · 9.00 A.M</div>
-        <div class="cd" id="cd" data-a style="top:40%">
+        <div class="agenda-header">
+          <div class="agenda-kicker" data-a>SAMPLE PROGRAMME</div>
+          <h2 class="agenda-title silver" data-a>Celebration Agenda</h2>
+          <p class="agenda-date" data-a>20 December 2026 · 9:00 AM – 4:00 PM</p>
+        </div>
+        <ol class="agenda-list">
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">9:00 – 9:30 AM</span>
+            <strong>Guest Arrival &amp; Registration</strong>
+            <span class="agenda-note">Welcome guests and enjoy light refreshments.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">9:30 – 10:00 AM</span>
+            <strong>Welcome &amp; Opening</strong>
+            <span class="agenda-note">Opening remarks to begin the celebration.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">10:00 – 11:00 AM</span>
+            <strong>Get-Together &amp; Icebreakers</strong>
+            <span class="agenda-note">Reconnect with friends and share stories.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">11:00 AM – 12:00 PM</span>
+            <strong>Games &amp; Group Activities</strong>
+            <span class="agenda-note">Join in some friendly games and activities.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">12:00 – 1:00 PM</span>
+            <strong>Lunch</strong>
+            <span class="agenda-note">Enjoy lunch together at the venue.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">1:00 – 2:00 PM</span>
+            <strong>Memories &amp; Group Photos</strong>
+            <span class="agenda-note">Capture the day with friends and family.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">2:00 – 3:15 PM</span>
+            <strong>Music &amp; Entertainment</strong>
+            <span class="agenda-note">Relax, enjoy the music, and celebrate.</span>
+          </li>
+          <li class="agenda-item" data-a>
+            <span class="agenda-time">3:15 – 4:00 PM</span>
+            <strong>Closing &amp; Farewell</strong>
+            <span class="agenda-note">A final thank-you before we say goodbye.</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Card 4 : Countdown + map -->
+    <section class="card" id="c4">
+      <div class="sheet">
+        <div class="abs c3-head silver" data-a style="top:15%">Countdown &amp; Location</div>
+        <div class="abs c3-sub" data-a style="top:21%">20 December 2026 · 9.00 A.M</div>
+        <div class="cd" id="cd" data-a style="top:27%">
           <div class="box"><span class="num" id="cdD">00</span><span class="lab">DAYS</span></div>
           <div class="box"><span class="num" id="cdH">00</span><span class="lab">HOURS</span></div>
           <div class="box"><span class="num" id="cdM">00</span><span class="lab">MINS</span></div>
           <div class="box"><span class="num" id="cdS">00</span><span class="lab">SECS</span></div>
         </div>
-        <div class="begun hidden" id="begun" style="top:40%">The Celebration<br>Has Begun!</div>
-        <div class="mapwrap" id="mapwrap" data-a style="top:52.4%;height:23.6%">
+        <div class="begun hidden" id="begun" style="top:27%">The Celebration<br>Has Begun!</div>
+        <div class="mapwrap" id="mapwrap" data-a style="top:39%;height:27%">
           <iframe title="Villa by the Edge map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
             src="https://maps.google.com/maps?q=6.9815467,79.8740649&z=16&hl=en&output=embed"></iframe>
           <div class="shield" id="shield">Tap map to explore</div>
         </div>
-        <div class="abs venue" data-a style="top:77.6%"><b>Villa by the Edge</b><span>54, Palliyawatta Road, Hekitta, Wattala</span></div>
-        <div class="btns" data-a style="top:86.2%">
+        <div class="abs venue" data-a style="top:68%"><b>Villa by the Edge</b><span>54, Palliyawatta Road, Hekitta, Wattala</span></div>
+        <div class="btns" data-a style="top:79%">
           <a class="btn p" id="dirBtn" target="_blank" rel="noopener">Open in Google Maps</a>
           <a class="btn s" href="tel:+94777410599">RSVP · Call Raj</a>
         </div>
       </div>
     </section>
   </div>
-  <div id="hint">Swipe left →</div>
+  <div id="hint">Scroll down ↓</div>
 </main>
-<div id="dots"><button class="a" aria-label="Card 1"></button><button aria-label="Card 2"></button><button aria-label="Card 3"></button></div>
+<div id="dots">
+  <button class="a" aria-label="Card 1: Invitation"></button>
+  <button aria-label="Card 2: Dress code"></button>
+  <button aria-label="Card 3: Agenda"></button>
+  <button aria-label="Card 4: Countdown and location"></button>
+</div>
 
 <!-- Host link generator (opens only with ?admin=1) -->
 <div id="admin" class="hidden">

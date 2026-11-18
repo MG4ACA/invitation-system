@@ -29,8 +29,8 @@ body { position: fixed; inset: 0; height: 100dvh; }
 a { color: inherit; text-decoration: none; }
 .hidden { display: none !important; }
 
-/* ambient canvas (glitter dust) sits behind everything */
-#dust { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+/* Ambient fairy dust overlays the cards while staying below controls. */
+#dust { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
 
 /* ---------- Mute button ---------- */
 #mute { position: fixed; top: max(14px, env(safe-area-inset-top)); right: 14px; z-index: 60; width: 44px; height: 44px;
@@ -44,7 +44,7 @@ a { color: inherit; text-decoration: none; }
 #intro { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center;
   background: radial-gradient(ellipse at 50% 42%, #262626 0%, #121212 55%, #080808 100%); overflow: hidden; }
 #intro .baubles { position: absolute; top: 0; left: 50%; width: min(100vw, 560px); transform: translateX(-50%); opacity: .9; pointer-events: none; }
-.scene { perspective: 1400px; width: min(86vw, 380px); aspect-ratio: 10/7; position: relative; margin-top: 6vh; }
+.scene { perspective: 1400px; width: min(86vw, 380px); aspect-ratio: 10/7; position: relative; margin-top: 0; }
 .env { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(8deg); cursor: pointer; }
 .env-back { position: absolute; inset: 0; border-radius: 6px; background: linear-gradient(160deg, #1d1d1d, #0e0e0e); box-shadow: 0 30px 60px rgba(0,0,0,.7), inset 0 0 0 1px rgba(217,180,90,.35); }
 .letter { position: absolute; left: 6%; right: 6%; top: 6%; height: 88%; border-radius: 4px; z-index: 2;
@@ -81,18 +81,22 @@ a { color: inherit; text-decoration: none; }
 #tap { position: absolute; bottom: 12vh; left: 0; right: 0; text-align: center; font: 500 12px var(--f-body); letter-spacing: .4em; text-transform: uppercase; color: var(--gold2); animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
 
-/* ---------- Stage 2 : deck ---------- */
-#deck { position: fixed; inset: 0; z-index: 10; overflow: hidden; opacity: 0; visibility: hidden; touch-action: none; cursor: grab; }
-#deck.drag { cursor: grabbing; }
-#track { display: flex; height: 100dvh; width: 300vw; will-change: transform; }
-.card { flex: 0 0 100vw; height: 100dvh; position: relative; display: grid; place-items: center; overflow: hidden;
+/* ---------- Stage 2 : vertically scrollable deck ---------- */
+#deck { position: fixed; inset: 0; z-index: 10; overflow-x: hidden; overflow-y: auto; opacity: 0; visibility: hidden;
+  touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; scroll-behavior: smooth; }
+#track { display: flex; flex-direction: column; width: 100%; min-height: 100dvh; }
+.card { flex: 0 0 100dvh; width: 100%; min-height: 100dvh; height: 100dvh; position: relative; display: grid; place-items: center; overflow: hidden;
   background: radial-gradient(ellipse 70% 45% at 50% 38%, #232323 0%, var(--bg2) 45%, var(--bg) 100%); }
 .sheet { position: relative; height: 100dvh; width: min(100vw, calc(100dvh * 933 / 1600)); container-type: size; z-index: 2; }
 .abs { position: absolute; left: 0; right: 0; text-align: center; }
 .baubles { position: absolute; top: 0; left: 0; width: 100%; pointer-events: none; z-index: 1; }
 .baubles svg, .baubles img { display: block; width: 100%; height: auto; overflow: visible; }
-.ribbons { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-.flake { position: absolute; width: 11cqw; opacity: .22; pointer-events: none; z-index: 0; }
+.flake { position: absolute; width: 11cqw; opacity: .22; pointer-events: none; z-index: 0; transform-origin: center;
+  transform: rotate(var(--flake-angle, 0deg)); animation: flakeDrift var(--flake-duration, 9s) ease-in-out var(--flake-delay, 0s) infinite; }
+@keyframes flakeDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--flake-angle, 0deg)); opacity: .12; }
+  50% { transform: translate3d(2px, -7px, 0) rotate(calc(var(--flake-angle, 0deg) + 14deg)); opacity: .3; }
+}
 
 /* Card 1 typography (cqw = % of sheet width, tuned to the 933px reference) */
 .t-we { top: 33.2%; font: 400 2.25cqw var(--f-body); letter-spacing: .3em; color: var(--silver2); }
@@ -136,17 +140,33 @@ a { color: inherit; text-decoration: none; }
 
 /* Card 2 */
 .dc-head { top: 57.2%; font: 600 5.5cqw/1 var(--f-head); letter-spacing: .02em; }
-.dc-list { position: absolute; top: 62.6%; left: 34%; right: 33%; text-align: left; font: 500 2.55cqw/1.35 var(--f-body); color: var(--silver); }
+.dc-list { position: absolute; top: 62.6%; left: 34%; right: 33%; z-index: 4; padding: 1.5cqw 2cqw; border: 1px solid rgba(255,255,255,.12); border-radius: 1.5cqw;
+  background: rgba(13,13,13,.78); backdrop-filter: blur(4px); text-align: left; font: 500 2.55cqw/1.35 var(--f-body); color: var(--silver); }
 .dc-list div { display: flex; align-items: center; gap: 1.8cqw; margin-bottom: 2.4cqw; }
 .dc-list svg { flex: 0 0 2.4cqw; width: 2.4cqw; height: 2.4cqw; }
 .fig { position: absolute; bottom: 12.6%; z-index: 3; }
-.fig.man { left: 3%; width: 28cqw; } .fig.woman { right: 3%; width: 31cqw; }
+.fig.man { left: 3%; width: 31cqw; } .fig.woman { right: 3%; width: 34cqw; }
 .fig .fb, .fig img { display: block; width: 100%; }
 .fig.has-img .fb { display: none; }
 .fig:not(.has-img) img { position: absolute; opacity: 0; }
 .tag { top: 93.6%; font: 600 2.7cqw/1.45 var(--f-head); letter-spacing: .02em; color: #f2f2f2; }
 
-/* Card 3 */
+/* Card 3 : sample agenda */
+.agenda-header { position: absolute; top: 12%; left: 6%; right: 6%; text-align: center; }
+.agenda-kicker { font: 600 1.9cqw var(--f-body); letter-spacing: .3em; color: var(--gold2); }
+.agenda-title { margin-top: 1.2cqw; font: 600 5.2cqw/1.1 var(--f-head); }
+.agenda-date { margin-top: 1.4cqw; font: 400 2.1cqw var(--f-body); letter-spacing: .08em; color: var(--silver2); }
+.agenda-list { position: absolute; top: 23%; bottom: 7%; left: 10%; right: 7%; display: flex; flex-direction: column; justify-content: space-between;
+  margin: 0; padding: 0 0 0 6cqw; list-style: none; }
+.agenda-list::before { content: ""; position: absolute; left: 1.4cqw; top: 1cqw; bottom: 2cqw; width: 1px; background: rgba(217,180,90,.7); }
+.agenda-item { position: relative; display: flex; flex-direction: column; padding: 0 0 1.2cqw; }
+.agenda-item::before { content: ""; position: absolute; left: -5.7cqw; top: .7cqw; width: 2.8cqw; height: 2.8cqw;
+  border: 1.5px solid var(--gold2); border-radius: 50%; background: #171717; box-shadow: 0 0 8px rgba(217,180,90,.3); }
+.agenda-time { font: 600 clamp(10px, 2.15cqw, 13px) var(--f-body); color: var(--gold2); letter-spacing: .03em; }
+.agenda-item strong { margin-top: .5cqw; font: 600 clamp(11px, 2.5cqw, 15px)/1.2 var(--f-body); color: var(--silver); }
+.agenda-note { margin-top: .45cqw; font: 400 clamp(9px, 1.85cqw, 11px)/1.3 var(--f-body); color: var(--silver2); }
+
+/* Card 4 : countdown + location */
 .c3-head { top: 29%; font: 600 4.6cqw/1.1 var(--f-head); letter-spacing: .05em; }
 .c3-sub { top: 34.4%; font: 400 1.9cqw var(--f-body); letter-spacing: .3em; text-transform: uppercase; color: var(--silver2); }
 .cd { position: absolute; top: 38.6%; left: 6%; right: 6%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4cqw; }
@@ -169,7 +189,7 @@ a { color: inherit; text-decoration: none; }
 .btn.p { background: linear-gradient(180deg, var(--lime2), #6fa532); color: #0d1a05; box-shadow: 0 6px 20px rgba(139,195,74,.3); }
 .btn.s { border: 1px solid rgba(217,180,90,.8); color: var(--gold2); background: rgba(217,180,90,.08); }
 
-/* pagination + swipe hint */
+/* pagination + scroll hint */
 #dots { position: fixed; bottom: max(14px, env(safe-area-inset-bottom)); left: 0; right: 0; z-index: 30; display: flex; justify-content: center; gap: 10px; opacity: 0; pointer-events: none; }
 #dots.on { opacity: 1; pointer-events: auto; }
 #dots button { width: 8px; height: 8px; padding: 0; border-radius: 50%; border: 0; background: rgba(255,255,255,.3); transition: all .35s; }
@@ -189,4 +209,4 @@ a { color: inherit; text-decoration: none; }
 #admin button.g { background: transparent; color: var(--silver2); border: 1px solid #444; }
 #admin .bar { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
 
-@media (prefers-reduced-motion: reduce) { .shimmer::after, #tap { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .shimmer::after, #tap, .flake { animation: none; } }
