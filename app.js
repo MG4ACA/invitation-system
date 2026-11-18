@@ -392,17 +392,14 @@
   });
 
   // =========================================================================
-  // 5. SWIPEABLE 3-CARD CAROUSEL (TOUCH, MOUSE DRAG & DOTS)
+  // 5. VERTICALLY SCROLLABLE 3-CARD DECK
   // =========================================================================
-  const cardsTrack = document.getElementById('cards-track');
+  const cards = document.querySelectorAll('.invite-card');
   const pageDots = document.querySelectorAll('.page-dot');
   const swipeHint = document.getElementById('swipe-hint');
-  const TOTAL_CARDS = 3;
 
   let currentIndex = 0;
-  let startX = 0;
-  let currentDeltaX = 0;
-  let isDragging = false;
+  let scrollUpdateScheduled = false;
   const visitedCards = new Set();
 
   function animateCardEntrance(index) {
@@ -449,13 +446,15 @@
   }
 
   function goToCard(index) {
-    currentIndex = Math.max(0, Math.min(TOTAL_CARDS - 1, index));
-    const targetX = -currentIndex * window.innerWidth;
+    currentIndex = Math.max(0, Math.min(cards.length - 1, index));
+    const targetTop =
+      deckStage.scrollTop +
+      cards[currentIndex].getBoundingClientRect().top -
+      deckStage.getBoundingClientRect().top;
 
-    gsap.to(cardsTrack, {
-      x: targetX,
-      duration: 0.5,
-      ease: 'power3.out',
+    deckStage.scrollTo({
+      top: targetTop,
+      behavior: 'smooth',
     });
 
     pageDots.forEach((dot, i) => {
@@ -469,95 +468,41 @@
     animateCardEntrance(currentIndex);
   }
 
-  // Touch Events
-  cardsTrack.addEventListener(
-    'touchstart',
-    (e) => {
-      if (e.touches.length !== 1) return;
-      isDragging = true;
-      startX = e.touches[0].clientX;
-      currentDeltaX = 0;
-      gsap.killTweensOf(cardsTrack);
+  deckStage.addEventListener(
+    'scroll',
+    () => {
+      if (scrollUpdateScheduled) return;
+      scrollUpdateScheduled = true;
+
+      requestAnimationFrame(() => {
+        const marker = deckStage.getBoundingClientRect().top + deckStage.clientHeight * 0.4;
+        let visibleIndex = 0;
+
+        cards.forEach((card, index) => {
+          if (card.getBoundingClientRect().top <= marker) visibleIndex = index;
+        });
+
+        currentIndex = visibleIndex;
+        pageDots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentIndex);
+        });
+
+        if (currentIndex > 0 && swipeHint) {
+          swipeHint.style.opacity = '0';
+        }
+
+        animateCardEntrance(currentIndex);
+        scrollUpdateScheduled = false;
+      });
     },
     { passive: true },
   );
 
-  cardsTrack.addEventListener(
-    'touchmove',
-    (e) => {
-      if (!isDragging) return;
-      currentDeltaX = e.touches[0].clientX - startX;
-      // Rubber-band resistance at deck edges
-      const atEdge =
-        (currentIndex === 0 && currentDeltaX > 0) ||
-        (currentIndex === TOTAL_CARDS - 1 && currentDeltaX < 0);
-      const dampedDelta = atEdge ? currentDeltaX * 0.28 : currentDeltaX;
-      const baseOffset = -currentIndex * window.innerWidth;
-      gsap.set(cardsTrack, { x: baseOffset + dampedDelta });
-    },
-    { passive: true },
-  );
-
-  cardsTrack.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    const threshold = window.innerWidth * 0.18;
-
-    if (currentDeltaX < -threshold && currentIndex < TOTAL_CARDS - 1) {
-      goToCard(currentIndex + 1);
-    } else if (currentDeltaX > threshold && currentIndex > 0) {
-      goToCard(currentIndex - 1);
-    } else {
-      goToCard(currentIndex);
-    }
-  });
-
-  // Desktop Mouse Drag Support
-  cardsTrack.addEventListener('mousedown', (e) => {
-    if (e.target.closest('a, button, iframe')) return;
-    isDragging = true;
-    startX = e.clientX;
-    currentDeltaX = 0;
-    gsap.killTweensOf(cardsTrack);
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    currentDeltaX = e.clientX - startX;
-    const baseOffset = -currentIndex * window.innerWidth;
-    gsap.set(cardsTrack, { x: baseOffset + currentDeltaX });
-  });
-
-  window.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    const threshold = window.innerWidth * 0.15;
-
-    if (currentDeltaX < -threshold && currentIndex < TOTAL_CARDS - 1) {
-      goToCard(currentIndex + 1);
-    } else if (currentDeltaX > threshold && currentIndex > 0) {
-      goToCard(currentIndex - 1);
-    } else {
-      goToCard(currentIndex);
-    }
-  });
-
-  // Pagination Dot Clicks & Keyboard Arrows
+  // Pagination Dot Clicks
   pageDots.forEach((dot) => {
     dot.addEventListener('click', () => {
-      const idx = Number(dot.dataset.index);
-      goToCard(idx);
+      goToCard(Number(dot.dataset.index));
     });
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (!isEnvelopeOpened) return;
-    if (e.key === 'ArrowRight') goToCard(currentIndex + 1);
-    if (e.key === 'ArrowLeft') goToCard(currentIndex - 1);
-  });
-
-  window.addEventListener('resize', () => {
-    gsap.set(cardsTrack, { x: -currentIndex * window.innerWidth });
   });
 
   // =========================================================================

@@ -163,7 +163,7 @@
     </section>
 
     <!-- =====================================================================
-       STAGE 2: 3-PAGE SWIPEABLE CARD DECK (NO BOTTOM TABS)
+       STAGE 2: 3-PAGE VERTICALLY SCROLLABLE INVITATION
   ====================================================================== -->
     <main id="deck-stage" class="fixed inset-0 z-20 opacity-0 pointer-events-none">
       <div id="cards-track" class="cards-track">
@@ -362,7 +362,7 @@
           <div class="snowflake-deco snowflake-bc-2" aria-hidden="true">❄</div>
 
           <div
-            class="card-inner flex flex-col justify-between h-full w-full max-w-[440px] mx-auto px-4 pb-11 pt-0 relative overflow-hidden"
+            class="card-inner flex flex-col justify-between h-full w-full max-w-[440px] mx-auto px-4 pb-11 pt-0 relative"
           >
             <!-- Top Hanging Baubles -->
             <div
@@ -579,7 +579,7 @@
         </article>
       </div>
 
-      <!-- Minimal Floating Pagination Dots + Initial Swipe Hint (No Bottom Tabs) -->
+      <!-- Minimal Floating Pagination Dots + Initial Scroll Hint (No Bottom Tabs) -->
       <div
         class="fixed bottom-3 left-0 right-0 z-30 flex flex-col items-center pointer-events-none"
       >
@@ -587,7 +587,7 @@
           id="swipe-hint"
           class="text-[10px] tracking-[0.25em] uppercase text-[#E6C768]/90 mb-1.5 transition-opacity duration-500"
         >
-          Swipe left &rarr;
+          Scroll down &darr;
         </p>
         <div
           class="flex items-center gap-2 pointer-events-auto"

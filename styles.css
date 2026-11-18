@@ -204,27 +204,29 @@ body {
 }
 
 /* =========================================================================
-   STAGE 2: SWIPEABLE 3-CARD DECK
+   STAGE 2: VERTICALLY SCROLLABLE INVITATION
 ========================================================================= */
-.cards-track {
-  display: flex;
-  width: 300vw;
-  height: 100dvh;
-  will-change: transform;
-  touch-action: pan-y;
-  cursor: grab;
+#deck-stage {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
-.cards-track:active {
-  cursor: grabbing;
+.cards-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100dvh;
 }
 
 .invite-card {
-  width: 100vw;
-  height: 100dvh;
-  flex-shrink: 0;
+  width: 100%;
+  min-height: 100dvh;
+  height: auto;
+  flex: 0 0 auto;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Gentle Pendulum Sway on Top Ornaments */
