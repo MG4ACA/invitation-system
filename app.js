@@ -3,13 +3,15 @@
  * Features:
  * - Stateless URL guest personalization (?guest= or ?g=)
  * - Interactive 3D Envelope opening with Web Audio API SFX & synthesized music-box loop
- * - 3-Card touch/mouse swipeable deck with GSAP spring physics
+ * - Vertically scrollable 3-card deck with subtle GSAP entrances
  * - Dynamic Location QR Code & live Sri Lanka Time countdown
  * - Stateless Host Link Generator (?admin=1)
  */
 
 (() => {
   'use strict';
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // =========================================================================
   // 1. EVENT CONFIGURATION & PERSONALIZATION
@@ -321,6 +323,14 @@
     audioEngine.playEnvelopeOpenSFX();
     setTimeout(() => audioEngine.startMusicBoxLoop(), 450);
 
+    if (prefersReducedMotion) {
+      envelopeStage.style.display = 'none';
+      deckStage.style.opacity = '1';
+      deckStage.classList.remove('pointer-events-none');
+      animateCardEntrance(0);
+      return;
+    }
+
     // Burst gold glitter from wax seal center
     const rect = envelopeTrigger.getBoundingClientRect();
     createParticles(45, {
@@ -400,11 +410,26 @@
 
   let currentIndex = 0;
   let scrollUpdateScheduled = false;
+  let countdownCardVisited = false;
   const visitedCards = new Set();
 
   function animateCardEntrance(index) {
     if (visitedCards.has(index)) return;
     visitedCards.add(index);
+
+    if (index === 2) countdownCardVisited = true;
+    if (prefersReducedMotion) return;
+
+    const card = cards[index];
+    const crest = card.querySelector('.crest-shimmer-container') || card.querySelector('img');
+    if (crest) {
+      gsap.from(crest, {
+        scale: 0.96,
+        duration: 0.65,
+        ease: 'power2.out',
+        transformOrigin: 'center center',
+      });
+    }
 
     if (index === 0) {
       gsap.from('.anim-c1', {
@@ -424,12 +449,14 @@
       });
       gsap.from('#model-man', {
         x: -45,
+        scale: 0.98,
         opacity: 0,
         duration: 0.8,
         ease: 'power3.out',
       });
       gsap.from('#model-woman', {
         x: 45,
+        scale: 0.98,
         opacity: 0,
         duration: 0.8,
         ease: 'power3.out',
@@ -441,6 +468,22 @@
         duration: 0.65,
         stagger: 0.1,
         ease: 'power3.out',
+      });
+      gsap.from('#countdown-grid .countdown-box', {
+        y: 10,
+        scale: 0.96,
+        opacity: 0,
+        duration: 0.45,
+        stagger: 0.08,
+        delay: 0.1,
+        ease: 'power2.out',
+      });
+      gsap.from('#venue-map-panel', {
+        scale: 0.98,
+        duration: 0.65,
+        delay: 0.2,
+        ease: 'power2.out',
+        transformOrigin: 'center center',
       });
     }
   }
@@ -516,6 +559,19 @@
   const countdownGrid = document.getElementById('countdown-grid');
   const countdownLiveMsg = document.getElementById('countdown-live-msg');
 
+  function updateCountdownNumber(element, value) {
+    if (element.textContent === value) return;
+    element.textContent = value;
+
+    if (countdownCardVisited && !prefersReducedMotion && !document.hidden) {
+      gsap.fromTo(
+        element,
+        { y: 5, opacity: 0.65 },
+        { y: 0, opacity: 1, duration: 0.2, ease: 'power2.out', overwrite: 'auto' },
+      );
+    }
+  }
+
   function updateCountdown() {
     const now = Date.now();
     const diff = targetTimestamp - now;
@@ -531,10 +587,10 @@
     const mins = Math.floor((diff / (1000 * 60)) % 60);
     const secs = Math.floor((diff / 1000) % 60);
 
-    elDays.textContent = String(days).padStart(2, '0');
-    elHours.textContent = String(hours).padStart(2, '0');
-    elMins.textContent = String(mins).padStart(2, '0');
-    elSecs.textContent = String(secs).padStart(2, '0');
+    updateCountdownNumber(elDays, String(days).padStart(2, '0'));
+    updateCountdownNumber(elHours, String(hours).padStart(2, '0'));
+    updateCountdownNumber(elMins, String(mins).padStart(2, '0'));
+    updateCountdownNumber(elSecs, String(secs).padStart(2, '0'));
   }
 
   updateCountdown();
