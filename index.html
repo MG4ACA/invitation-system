@@ -1,682 +1,135 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-    <title>25 Years Get Together Party — Invitation</title>
-    <meta
-      name="description"
-      content="You are cordially invited to our 25 Years Get Together Party on December 20, 2026 at Villa by the Edge, Wattala."
-    />
-    <meta name="theme-color" content="#0D0D0D" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0d0d0d">
+<title>25 Years Get-together Party — You're Invited</title>
+<meta name="description" content="You are invited to our 25 Years Get-together party — 20 Dec 2026, Villa by the Edge, Wattala.">
+<meta property="og:title" content="You're invited — 25 Years Get-together Party">
+<meta property="og:description" content="20 Dec 2026 · 9.00 A.M – 4.00 P.M · Villa by the Edge, Wattala">
+<meta name="robots" content="noindex">
+<link rel="preload" href="assets/fonts/great-vibes-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<canvas id="dust"></canvas>
 
-    <!-- Google Fonts: Luxury Serif, Modern Sans & Flowing Script -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<!-- Mute / unmute (visible on every screen once the envelope is opened) -->
+<button id="mute" aria-label="Mute or unmute music">
+  <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="x" d="M17 9l5 6M22 9l-5 6"/></svg>
+</button>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- GSAP 3 CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-    <!-- QRCode.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body
-    class="bg-[#0D0D0D] text-[#F5F5F5] antialiased selection:bg-[#8BC34A] selection:text-black overflow-hidden"
-  >
-    <!-- Ambient Glitter & Confetti Canvas -->
-    <canvas id="ambient-canvas" class="fixed inset-0 pointer-events-none z-10"></canvas>
-
-    <!-- Floating Audio Toggle Button (Top-Right) -->
-    <button
-      id="audio-toggle"
-      type="button"
-      aria-label="Toggle Background Music"
-      class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/60 border border-[#D4AF37]/40 backdrop-blur-md flex items-center justify-center text-[#E6C768] shadow-lg active:scale-90 transition-transform"
-    >
-      <!-- Sound On Icon -->
-      <svg
-        id="icon-sound-on"
-        class="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        viewBox="0 0 24 24"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5z" />
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"
-        />
-      </svg>
-      <!-- Sound Muted Icon -->
-      <svg
-        id="icon-sound-off"
-        class="w-5 h-5 hidden text-neutral-400"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        viewBox="0 0 24 24"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M23 9l-6 6M17 9l6 6" />
-      </svg>
-    </button>
-
-    <!-- =====================================================================
-       STAGE 1: INTERACTIVE 3D ENVELOPE OVERLAY
-  ====================================================================== -->
-    <section
-      id="envelope-stage"
-      class="fixed inset-0 z-40 flex flex-col items-center justify-center px-5 luxury-bg"
-    >
-      <!-- Subtle Top Ornament Hint -->
-      <div class="text-center mb-6 z-20 envelope-intro-text">
-        <p class="font-serif-luxury text-[11px] tracking-[0.35em] text-[#D4AF37]/80 uppercase">
-          25 Years Milestone
-        </p>
-        <p class="text-xs tracking-[0.2em] text-neutral-400 uppercase mt-1">
-          Exclusive Celebration
-        </p>
-      </div>
-
-      <!-- 3D Envelope Wrapper -->
-      <div
-        id="envelope-trigger"
-        role="button"
-        tabindex="0"
-        aria-label="Tap to open invitation envelope"
-        class="envelope-scene cursor-pointer select-none z-20"
-      >
-        <div class="envelope-body" id="envelope-body">
-          <!-- Gold Foil Outer Border -->
-          <div class="envelope-gold-frame"></div>
-
-          <!-- Inner Rising Preview Card -->
-          <div class="envelope-inner-card" id="envelope-inner-card">
-            <p class="font-serif-luxury text-[10px] tracking-[0.28em] text-neutral-400 uppercase">
-              We Are Inviting You
-            </p>
-            <p class="font-script-luxury text-3xl text-[#8BC34A] mt-1">25 Years</p>
-            <p class="text-[10px] tracking-[0.2em] text-neutral-300 uppercase mt-1">
-              20 Dec 2026 • Wattala
-            </p>
-          </div>
-
-          <!-- Envelope Side & Bottom Pocket Flaps -->
-          <div class="envelope-flap-left"></div>
-          <div class="envelope-flap-right"></div>
-          <div class="envelope-flap-bottom"></div>
-
-          <!-- Top Triangular Opening Flap -->
-          <div class="envelope-flap-top" id="envelope-flap-top"></div>
-
-          <!-- Recipient Name Plaque on Front Pocket -->
-          <div class="envelope-recipient-box" id="envelope-recipient-box">
-            <span class="block text-[9px] tracking-[0.26em] text-[#D4AF37]/80 uppercase mb-1">
-              Specially Invited
-            </span>
-            <span
-              id="envelope-guest-name"
-              class="block font-sans-clean text-sm sm:text-base font-bold tracking-[0.14em] text-white uppercase truncate max-w-[230px]"
-            >
-              VALUED GUEST
-            </span>
-          </div>
-
-          <!-- 3D Crimson Red Wax Seal ("25") -->
-          <div class="wax-seal" id="wax-seal">
-            <div class="wax-seal-inner">
-              <span
-                class="font-serif-luxury font-bold text-lg tracking-wider text-[#F7DF94] drop-shadow"
-              >
-                25
-              </span>
-            </div>
-          </div>
+<!-- ============ STAGE 1 : ENVELOPE ============ -->
+<section id="intro" aria-label="Invitation envelope">
+  <div class="baubles" id="introBaubles"></div>
+  <div class="scene">
+    <div class="env" id="env">
+      <div class="env-back"></div>
+      <div class="letter" id="letter">
+        <div class="mini">
+          <div class="silver" style="font:400 11px var(--f-body);letter-spacing:.3em">WE ARE</div>
+          <div class="silver" style="font:400 28px var(--f-head);letter-spacing:.12em">INVITING</div>
+          <div class="script" style="font-size:34px;margin-top:6px">Get together party</div>
         </div>
       </div>
+      <div class="pocket"><i class="l"></i><i class="r"></i><i class="b"></i></div>
+      <div class="label"><small>Specially Invited</small><span id="envName">VALUED GUEST</span></div>
+      <div class="flap" id="flap"><div class="face front"></div><div class="face back"></div></div>
+      <div class="flap-edge" id="flapEdge"></div>
+      <div class="seal" id="seal"><b>25</b></div>
+    </div>
+  </div>
+  <div id="tap">Tap to Open</div>
+</section>
 
-      <!-- Pulsing Tap Prompt -->
-      <div id="tap-prompt" class="mt-8 text-center z-20">
-        <p
-          class="inline-flex items-center gap-2 text-xs tracking-[0.28em] uppercase text-[#E6C768] animate-pulse"
-        >
-          <span class="w-1.5 h-1.5 rounded-full bg-[#8BC34A]"></span>
-          Tap Seal to Open
-          <span class="w-1.5 h-1.5 rounded-full bg-[#8BC34A]"></span>
-        </p>
+<!-- ============ STAGE 2 : 3-CARD DECK ============ -->
+<main id="deck" aria-label="Invitation cards">
+  <div id="track">
+
+    <!-- Card 1 : Main invitation -->
+    <section class="card" id="c1">
+      <div class="sheet">
+        <div class="baubles" data-baubles></div>
+        <svg class="ribbons" data-ribbons viewBox="0 0 933 1600" preserveAspectRatio="none"></svg>
+        <div class="abs t-we" data-a>WE ARE</div>
+        <div class="abs t-inv silver" data-a>INVITING</div>
+        <div class="abs t-join" data-a>YOU TO JOIN OUR</div>
+        <div class="crest" style="top:42.2%" data-a data-crest><div class="fb"></div><img src="assets/crest-25-years.png" alt="25 Years — Get together party" onload="this.parentNode.classList.add('has-img')"><div class="shimmer"></div></div>
+        <div class="abs namerow" data-a><label>Name:</label><div class="val" id="guestName">VALUED GUEST</div></div>
+        <div class="abs info" data-a>
+          <div class="dbox"><span class="n">20</span><span class="th">th</span><span class="dy">Dec<br>2026</span><span class="tm">9.00 A.M &nbsp;|&nbsp; 4.00 P.M</span></div>
+          <div class="vr"></div>
+          <div class="where"><b>Villa by the Edge</b><span>54, Palliyawatta Road,</span><span>Hekitta Wattala, Wattala</span></div>
+        </div>
+        <div class="abs rsvp" data-a>RSVP: <a href="tel:+94777410599">Raj 077 741 0599</a></div>
+        <a class="qr" id="qr" data-a target="_blank" rel="noopener" aria-label="Open venue in Google Maps"></a>
       </div>
     </section>
 
-    <!-- =====================================================================
-       STAGE 2: 3-PAGE VERTICALLY SCROLLABLE INVITATION
-  ====================================================================== -->
-    <main id="deck-stage" class="fixed inset-0 z-20 opacity-0 pointer-events-none">
-      <div id="cards-track" class="cards-track">
-        <!-- ===================================================================
-           CARD 1: MAIN INVITATION (MATCHING REFERENCE IMAGE 1)
-      ==================================================================== -->
-        <article class="invite-card luxury-bg" data-card="0">
-          <!-- Embossed Bottom Corner Snowflakes -->
-          <div class="snowflake-deco snowflake-bl-1" aria-hidden="true">❄</div>
-          <div class="snowflake-deco snowflake-bl-2" aria-hidden="true">❄</div>
-          <div class="snowflake-deco snowflake-br-1" aria-hidden="true">❄</div>
-          <div class="snowflake-deco snowflake-br-2" aria-hidden="true">❄</div>
-
-          <div
-            class="card-inner flex flex-col justify-between h-full w-full max-w-[440px] mx-auto px-5 pb-11 pt-0 relative"
-          >
-            <!-- Top Hanging Baubles -->
-            <div
-              class="baubles-wrapper w-full flex justify-center pointer-events-none select-none anim-c1"
-            >
-              <img
-                src="assets/baubles-top.png"
-                alt="Festive Glitter Ornaments"
-                class="w-full max-h-[23vh] object-contain object-top pendulum-sway"
-                onerror="
-                  this.style.display = 'none';
-                  this.nextElementSibling.classList.remove('hidden');
-                "
-              />
-              <!-- Clean SVG Fallback if PNG not yet placed -->
-              <svg class="hidden w-full h-[155px] pendulum-sway" viewBox="0 0 360 160" fill="none">
-                <line x1="55" y1="0" x2="55" y2="85" stroke="#D4AF37" stroke-width="1" />
-                <circle cx="55" cy="105" r="22" fill="url(#blackBauble)" />
-                <line x1="105" y1="0" x2="105" y2="32" stroke="#D4AF37" stroke-width="1" />
-                <circle cx="105" cy="50" r="18" fill="url(#redBauble)" />
-                <line x1="175" y1="0" x2="175" y2="95" stroke="#D4AF37" stroke-width="1" />
-                <circle cx="175" cy="120" r="26" fill="url(#redBauble)" />
-                <line x1="220" y1="0" x2="220" y2="25" stroke="#D4AF37" stroke-width="1" />
-                <circle cx="220" cy="40" r="16" fill="url(#blackBauble)" />
-                <line x1="265" y1="0" x2="265" y2="75" stroke="#D4AF37" stroke-width="1" />
-                <circle cx="265" cy="95" r="20" fill="url(#redBauble)" />
-                <line x1="312" y1="0" x2="312" y2="48" stroke="#D4AF37" stroke-width="1" />
-                <circle cx="312" cy="64" r="16" fill="url(#blackBauble)" />
-                <defs>
-                  <radialGradient id="redBauble" cx="35%" cy="35%" r="65%">
-                    <stop offset="0%" stop-color="#D32F2F" />
-                    <stop offset="100%" stop-color="#5C0A0E" />
-                  </radialGradient>
-                  <radialGradient id="blackBauble" cx="35%" cy="35%" r="65%">
-                    <stop offset="0%" stop-color="#4A4A4A" />
-                    <stop offset="100%" stop-color="#121212" />
-                  </radialGradient>
-                </defs>
-              </svg>
-            </div>
-
-            <!-- Invitation Header & 25 Years Crest -->
-            <div class="text-center my-auto flex flex-col items-center">
-              <div class="anim-c1">
-                <p
-                  class="text-[11px] sm:text-xs tracking-[0.28em] text-neutral-300 uppercase font-medium"
-                >
-                  WE ARE
-                </p>
-                <h1
-                  class="font-serif-luxury text-3xl sm:text-4xl tracking-[0.2em] text-white font-semibold mt-0.5"
-                >
-                  INVITING
-                </h1>
-                <p
-                  class="text-[11px] sm:text-xs tracking-[0.24em] text-neutral-300 uppercase font-medium mt-0.5"
-                >
-                  YOU TO JOIN OUR
-                </p>
-              </div>
-
-              <!-- 25 Years Centerpiece Lockup -->
-              <div class="crest-shimmer-container relative my-2 sm:my-3 anim-c1">
-                <img
-                  src="assets/crest-25-years.png"
-                  alt="25 Years Get Together Party"
-                  class="max-h-[25vh] w-auto mx-auto object-contain drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)]"
-                  onerror="
-                    this.style.display = 'none';
-                    this.nextElementSibling.classList.remove('hidden');
-                  "
-                />
-                <!-- Clean Fallback Lockup -->
-                <div class="hidden text-center py-2">
-                  <div class="text-2xl text-neutral-300 tracking-widest">♛</div>
-                  <div
-                    class="font-serif-luxury text-5xl font-bold silver-gradient-text leading-none"
-                  >
-                    25
-                  </div>
-                  <div class="font-script-luxury text-4xl silver-gradient-text -mt-2">Years</div>
-                  <div class="font-script-luxury text-4xl text-[#8BC34A] leading-tight mt-1">
-                    Get together
-                    <br />
-                    party
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Personalized Guest Name + Date/Venue + RSVP & QR -->
-            <div class="w-full space-y-4">
-              <!-- Guest Name Row -->
-              <div class="flex items-end justify-center gap-2.5 px-2 anim-c1">
-                <span class="text-xs sm:text-sm font-medium text-neutral-200 pb-1 shrink-0">
-                  Name:
-                </span>
-                <div class="flex-1 max-w-[260px] border-b border-white/75 pb-1 text-center">
-                  <span
-                    id="card-guest-name"
-                    class="font-sans-clean text-sm sm:text-base font-bold tracking-[0.12em] text-white uppercase block truncate"
-                  >
-                    RAJ KUMAR FAMILY
-                  </span>
-                </div>
-              </div>
-
-              <!-- Two-Column Date & Venue Split -->
-              <div class="grid grid-cols-2 items-center pt-1 anim-c1">
-                <!-- Left: Date & Time -->
-                <div class="pr-3 border-r border-white/60 flex flex-col items-end text-right">
-                  <div class="flex items-start leading-none">
-                    <span class="text-4xl sm:text-5xl font-extrabold text-[#8BC34A] tracking-tight">
-                      20
-                    </span>
-                    <div
-                      class="flex flex-col text-left ml-1 text-[11px] sm:text-xs font-bold leading-tight"
-                    >
-                      <span class="text-[#8BC34A]">th</span>
-                      <span class="text-white">Dec</span>
-                      <span class="text-white">2026</span>
-                    </div>
-                  </div>
-                  <p
-                    class="text-[10px] sm:text-[11px] font-semibold tracking-wider text-neutral-100 mt-1.5"
-                  >
-                    9.00 A.M
-                    <span class="text-white/60 mx-0.5">|</span>
-                    4.00 P.M
-                  </p>
-                </div>
-
-                <!-- Right: Venue Address -->
-                <div class="pl-3 text-left leading-snug">
-                  <p class="text-xs sm:text-sm font-bold text-[#8BC34A]">Villa by the Edge</p>
-                  <p class="text-[11px] sm:text-xs text-neutral-100 mt-0.5">
-                    54, Palliyawatta Road,
-                  </p>
-                  <p class="text-[11px] sm:text-xs text-neutral-100">Hekitta Wattala, Wattala</p>
-                </div>
-              </div>
-
-              <!-- Bottom Row: RSVP Link & Location QR Code -->
-              <div class="relative flex items-center justify-center pt-2 min-h-[68px] anim-c1">
-                <a
-                  id="rsvp-link-c1"
-                  href="https://wa.me/94777410599"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-xs sm:text-sm font-medium tracking-wide text-white hover:text-[#8BC34A] transition-colors py-2 px-3 rounded-lg active:scale-95"
-                >
-                  RSVP:
-                  <span class="font-semibold">Raj 077 741 0599</span>
-                </a>
-
-                <!-- Bottom-Right QR Code for Google Maps Location -->
-                <a
-                  id="qr-map-link"
-                  href="https://www.google.com/maps/search/?api=1&query=Villa+by+the+Edge,+54+Palliyawatta+Road,+Hekitta,+Wattala"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Scan or tap for Villa by the Edge location"
-                  class="absolute right-0 bottom-0 bg-white p-1.5 rounded shadow-lg active:scale-95 transition-transform"
-                >
-                  <div
-                    id="location-qrcode"
-                    class="w-[54px] h-[54px] flex items-center justify-center"
-                  ></div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ===================================================================
-           CARD 2: DRESS CODE (MATCHING REFERENCE IMAGE 2)
-      ==================================================================== -->
-        <article class="invite-card luxury-bg" data-card="1">
-          <!-- Embossed Bottom Center Snowflakes -->
-          <div class="snowflake-deco snowflake-bc-1" aria-hidden="true">❄</div>
-          <div class="snowflake-deco snowflake-bc-2" aria-hidden="true">❄</div>
-
-          <div
-            class="card-inner dress-code-inner flex flex-col items-center w-full max-w-[440px] mx-auto px-4 relative"
-          >
-            <!-- Top Hanging Baubles -->
-            <div
-              class="dress-code-baubles baubles-wrapper w-full flex justify-center pointer-events-none select-none z-10 anim-c2"
-            >
-              <img
-                src="assets/baubles-top.png"
-                alt="Festive Glitter Ornaments"
-                class="w-full max-h-[21vh] object-contain object-top pendulum-sway"
-                onerror="this.style.display = 'none'"
-              />
-            </div>
-
-            <!-- Centerpiece Crest & Dress Code Typography -->
-            <div
-              class="dress-code-centerpiece relative z-20 flex flex-col items-center text-center px-2"
-            >
-              <div class="crest-shimmer-container anim-c2">
-                <img
-                  src="assets/crest-25-years.png"
-                  alt="25 Years Get Together Party"
-                  class="max-h-[19vh] w-auto mx-auto object-contain drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)]"
-                  onerror="
-                    this.style.display = 'none';
-                    this.nextElementSibling.classList.remove('hidden');
-                  "
-                />
-                <div class="hidden text-center">
-                  <div class="font-serif-luxury text-4xl font-bold silver-gradient-text">
-                    25 Years
-                  </div>
-                  <div class="font-script-luxury text-3xl text-[#8BC34A]">Get together party</div>
-                </div>
-              </div>
-
-              <h2
-                class="font-serif-luxury text-2xl sm:text-3xl font-bold tracking-[0.06em] text-white mt-3 mb-3 anim-c2"
-              >
-                Dress Code
-              </h2>
-
-              <!-- Dress Code Items -->
-              <div
-                class="dress-code-list w-full space-y-2.5 text-left max-w-[250px] mx-auto bg-black/70 backdrop-blur-sm px-3.5 py-2.5 rounded-xl border border-white/15 anim-c2"
-              >
-                <div class="flex items-start gap-2.5">
-                  <span class="text-[#7C8C6E] text-sm leading-5 shrink-0" aria-hidden="true">
-                    ♥
-                  </span>
-                  <p class="text-xs sm:text-[13px] font-medium text-neutral-100 leading-snug">
-                    Man Olive Green Shirt &amp; White Vesti
-                  </p>
-                </div>
-                <div class="flex items-start gap-2.5">
-                  <span class="text-[#D32F2F] text-sm leading-5 shrink-0" aria-hidden="true">
-                    ♥
-                  </span>
-                  <p class="text-xs sm:text-[13px] font-medium text-neutral-100 leading-snug">
-                    Women Red Dress
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Left & Right Cutout Models -->
-            <img
-              id="model-man"
-              src="assets/dresscode-man.png"
-              alt="Man in Olive Green Shirt and White Vesti"
-              class="dress-code-model pointer-events-none select-none absolute left-0 w-auto object-contain object-bottom z-10 drop-shadow-[0_8px_20px_rgba(0,0,0,0.85)]"
-              onerror="this.style.display = 'none'"
-            />
-            <img
-              id="model-woman"
-              src="assets/dresscode-woman.png"
-              alt="Woman in Red Dress"
-              class="dress-code-model pointer-events-none select-none absolute right-0 w-auto object-contain object-bottom z-10 drop-shadow-[0_8px_20px_rgba(0,0,0,0.85)]"
-              onerror="this.style.display = 'none'"
-            />
-
-            <!-- Bottom Tagline -->
-            <div class="dress-code-tagline relative z-20 text-center anim-c2">
-              <p
-                class="inline-block rounded-lg bg-black/55 px-3 py-1 font-serif-luxury text-[13px] sm:text-sm font-semibold tracking-wide text-white backdrop-blur-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]"
-              >
-                Dress in Olive Green &amp; Red
-                <br />
-                Join the Celebration!
-              </p>
-            </div>
-          </div>
-        </article>
-
-        <!-- ===================================================================
-           CARD 3: LIVE COUNTDOWN & VENUE MAP
-      ==================================================================== -->
-        <article class="invite-card luxury-bg" data-card="2">
-          <div
-            class="card-inner flex flex-col justify-between h-full w-full max-w-[440px] mx-auto px-5 pb-12 pt-5 relative"
-          >
-            <!-- Top Compact Crest & Heading -->
-            <div class="text-center anim-c3">
-              <img
-                src="assets/crest-25-years.png"
-                alt="25 Years Get Together Party"
-                class="max-h-[12vh] w-auto mx-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
-                onerror="this.style.display = 'none'"
-              />
-              <p class="text-[10px] tracking-[0.3em] text-[#D4AF37] uppercase mt-1">
-                Save The Date
-              </p>
-              <h2
-                class="font-serif-luxury text-xl sm:text-2xl font-bold tracking-[0.12em] text-white uppercase mt-0.5"
-              >
-                Countdown &amp; Venue
-              </h2>
-            </div>
-
-            <!-- Live Countdown Timer -->
-            <div id="countdown-wrapper" class="my-2 anim-c3">
-              <div id="countdown-grid" class="grid grid-cols-4 gap-2.5">
-                <div class="countdown-box">
-                  <span id="cd-days" class="countdown-num">00</span>
-                  <span class="countdown-label">Days</span>
-                </div>
-                <div class="countdown-box">
-                  <span id="cd-hours" class="countdown-num">00</span>
-                  <span class="countdown-label">Hours</span>
-                </div>
-                <div class="countdown-box">
-                  <span id="cd-mins" class="countdown-num">00</span>
-                  <span class="countdown-label">Mins</span>
-                </div>
-                <div class="countdown-box">
-                  <span id="cd-secs" class="countdown-num text-[#8BC34A]">00</span>
-                  <span class="countdown-label">Secs</span>
-                </div>
-              </div>
-              <div
-                id="countdown-live-msg"
-                class="hidden text-center py-3 px-4 rounded-xl bg-[#8BC34A]/15 border border-[#8BC34A]/50"
-              >
-                <p
-                  class="font-serif-luxury text-base font-bold text-[#8BC34A] tracking-wider uppercase"
-                >
-                  The Celebration Has Begun!
-                </p>
-              </div>
-            </div>
-
-            <!-- Dark-Framed Interactive Google Maps Embed -->
-            <div
-              id="venue-map-panel"
-              class="w-full flex-1 max-h-[34vh] min-h-[175px] my-1 rounded-2xl overflow-hidden border border-[#D4AF37]/40 shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative bg-[#141414] anim-c3"
-            >
-              <iframe
-                title="Villa by the Edge Location Map"
-                class="w-full h-full border-0 map-dark-filter"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://maps.google.com/maps?q=Villa%20by%20the%20Edge,%2054%20Palliyawatta%20Road,%20Hekitta,%20Wattala&t=&z=15&ie=UTF8&iwloc=&output=embed"
-              ></iframe>
-              <div
-                class="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 flex items-center justify-between"
-              >
-                <div class="truncate pr-2">
-                  <p class="text-[11px] font-bold text-[#8BC34A] truncate">Villa by the Edge</p>
-                  <p class="text-[10px] text-neutral-300 truncate">
-                    54, Palliyawatta Road, Hekitta, Wattala
-                  </p>
-                </div>
-                <span class="text-[10px] text-[#D4AF37] font-semibold shrink-0">9:00 AM</span>
-              </div>
-            </div>
-
-            <!-- High-Contrast Action Buttons -->
-            <div class="grid grid-cols-2 gap-3 pt-2 anim-c3">
-              <a
-                href="https://www.google.com/maps/search/?api=1&query=Villa+by+the+Edge,+54+Palliyawatta+Road,+Hekitta,+Wattala"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-[#D4AF37]/50 text-white text-xs font-semibold tracking-wide active:scale-95 transition-all"
-              >
-                <svg
-                  class="w-4 h-4 text-[#D4AF37] shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 21s-6-5.686-6-10a6 6 0 1112 0c0 4.314-6 10-6 10z"
-                  />
-                  <circle cx="12" cy="11" r="2.5" />
-                </svg>
-                <span>Open Maps</span>
-              </a>
-
-              <a
-                id="rsvp-link-c3"
-                href="https://wa.me/94777410599"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl bg-[#8BC34A] hover:bg-[#9CCC65] text-black text-xs font-bold tracking-wide shadow-[0_4px_16px_rgba(139,195,74,0.35)] active:scale-95 transition-all"
-              >
-                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.758.459 3.475 1.332 4.988L2 22l5.184-1.359a9.927 9.927 0 004.847 1.262h.004c5.515 0 9.969-4.454 9.969-9.969A9.934 9.934 0 0012.031 2zm5.805 14.234c-.244.688-1.418 1.316-1.969 1.398-.504.075-1.141.106-1.842-.116-.426-.135-.973-.316-1.672-.618-2.941-1.27-4.862-4.234-5.009-4.43-.146-.196-1.195-1.59-1.195-3.033 0-1.443.756-2.152 1.024-2.445.269-.293.586-.366.781-.366.195 0 .391.002.562.01.18.009.422-.068.66.504.244.586.83 2.026.903 2.173.073.146.122.317.024.513-.098.195-.146.317-.293.488-.146.171-.308.382-.439.513-.146.146-.299.305-.128.598.171.293.758 1.251 1.628 2.027 1.119.998 2.062 1.307 2.355 1.454.293.146.464.122.635-.073.171-.195.732-.854.928-1.147.195-.293.391-.244.659-.146.269.098 1.709.806 2.002.952.293.146.488.22.562.342.073.122.073.708-.171 1.396z"
-                  />
-                </svg>
-                <span>RSVP WhatsApp</span>
-              </a>
-            </div>
-          </div>
-        </article>
+    <!-- Card 2 : Dress code -->
+    <section class="card" id="c2">
+      <div class="sheet">
+        <div class="baubles" data-baubles></div>
+        <svg class="ribbons" data-ribbons viewBox="0 0 933 1600" preserveAspectRatio="none"></svg>
+        <div class="crest small" style="top:28%" data-a data-crest><div class="fb"></div><img src="assets/crest-25-years.png" alt="25 Years" onload="this.parentNode.classList.add('has-img')"><div class="shimmer"></div></div>
+        <div class="abs dc-head silver" data-a>Dress Code</div>
+        <div class="dc-list" data-a>
+          <div><svg viewBox="0 0 24 24"><path fill="#6f8f5a" d="M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.8-8 11-8 11z"/></svg><span>Man Olive Green Shirt &amp; White Vesti</span></div>
+          <div><svg viewBox="0 0 24 24"><path fill="#e53935" d="M12 21s-8-5.2-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.8-8 11-8 11z"/></svg><span>Women Red Dress</span></div>
+        </div>
+        <div class="fig man" id="figMan"><div class="fb" data-fig="man"></div><img src="assets/dresscode-man.png" alt="Man in olive green shirt and white veshti" onload="this.parentNode.classList.add('has-img')"></div>
+        <div class="fig woman" id="figWoman"><div class="fb" data-fig="woman"></div><img src="assets/dresscode-woman.png" alt="Woman in red dress" onload="this.parentNode.classList.add('has-img')"></div>
+        <div class="abs tag" data-a>Dress in Olive Green &amp; Red<br>Join the Celebration!</div>
       </div>
+    </section>
 
-      <!-- Minimal Floating Pagination Dots + Initial Scroll Hint (No Bottom Tabs) -->
-      <div
-        class="fixed bottom-3 left-0 right-0 z-30 flex flex-col items-center pointer-events-none"
-      >
-        <p
-          id="swipe-hint"
-          class="text-[10px] tracking-[0.25em] uppercase text-[#E6C768]/90 mb-1.5 transition-opacity duration-500"
-        >
-          Scroll down &darr;
-        </p>
-        <div
-          class="flex items-center gap-2 pointer-events-auto"
-          role="tablist"
-          aria-label="Invitation pages"
-        >
-          <button
-            type="button"
-            class="page-dot active"
-            data-index="0"
-            aria-label="Page 1: Invitation"
-          ></button>
-          <button
-            type="button"
-            class="page-dot"
-            data-index="1"
-            aria-label="Page 2: Dress Code"
-          ></button>
-          <button
-            type="button"
-            class="page-dot"
-            data-index="2"
-            aria-label="Page 3: Countdown and Map"
-          ></button>
+    <!-- Card 3 : Countdown + map -->
+    <section class="card" id="c3">
+      <div class="sheet">
+        <div class="baubles" data-baubles style="transform:scale(.5);transform-origin:top center"></div>
+        <svg class="ribbons" data-ribbons viewBox="0 0 933 1600" preserveAspectRatio="none"></svg>
+        <div class="crest small" style="top:14.2%;width:30cqw" data-a data-crest><div class="fb"></div><img src="assets/crest-25-years.png" alt="25 Years" onload="this.parentNode.classList.add('has-img')"><div class="shimmer"></div></div>
+        <div class="abs c3-head silver" data-a style="top:31.4%">Countdown &amp; Location</div>
+        <div class="abs c3-sub" data-a style="top:36%">20 December 2026 · 9.00 A.M</div>
+        <div class="cd" id="cd" data-a style="top:40%">
+          <div class="box"><span class="num" id="cdD">00</span><span class="lab">DAYS</span></div>
+          <div class="box"><span class="num" id="cdH">00</span><span class="lab">HOURS</span></div>
+          <div class="box"><span class="num" id="cdM">00</span><span class="lab">MINS</span></div>
+          <div class="box"><span class="num" id="cdS">00</span><span class="lab">SECS</span></div>
+        </div>
+        <div class="begun hidden" id="begun" style="top:40%">The Celebration<br>Has Begun!</div>
+        <div class="mapwrap" id="mapwrap" data-a style="top:52.4%;height:23.6%">
+          <iframe title="Villa by the Edge map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q=6.9815467,79.8740649&z=16&hl=en&output=embed"></iframe>
+          <div class="shield" id="shield">Tap map to explore</div>
+        </div>
+        <div class="abs venue" data-a style="top:77.6%"><b>Villa by the Edge</b><span>54, Palliyawatta Road, Hekitta, Wattala</span></div>
+        <div class="btns" data-a style="top:86.2%">
+          <a class="btn p" id="dirBtn" target="_blank" rel="noopener">Open in Google Maps</a>
+          <a class="btn s" href="tel:+94777410599">RSVP · Call Raj</a>
         </div>
       </div>
-    </main>
+    </section>
+  </div>
+  <div id="hint">Swipe left →</div>
+</main>
+<div id="dots"><button class="a" aria-label="Card 1"></button><button aria-label="Card 2"></button><button aria-label="Card 3"></button></div>
 
-    <!-- =====================================================================
-       STATELESS HOST LINK GENERATOR MODAL (?admin=1)
-  ====================================================================== -->
-    <div
-      id="admin-modal"
-      class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-[#161616] border border-[#D4AF37]/40 rounded-2xl w-full max-w-lg max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden"
-      >
-        <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between">
-          <div>
-            <h3
-              class="font-serif-luxury text-base font-bold text-[#E6C768] tracking-wider uppercase"
-            >
-              Host Link Generator
-            </h3>
-            <p class="text-xs text-neutral-400">
-              Paste guest names (one per line) to generate personal invite links
-            </p>
-          </div>
-          <button
-            id="close-admin-btn"
-            type="button"
-            class="text-neutral-400 hover:text-white text-xl leading-none px-2"
-          >
-            &times;
-          </button>
-        </div>
+<!-- Host link generator (opens only with ?admin=1) -->
+<div id="admin" class="hidden">
+  <div class="panel">
+    <h2>Host Link Generator</h2>
+    <p>Paste one guest or family name per line, then copy each personalised link.</p>
+    <textarea id="names" placeholder="Raj Kumar Family&#10;Nimal Perera&#10;..."></textarea>
+    <div class="bar"><button class="b" id="gen">Generate links</button><button class="b g" id="copyAll">Copy all</button><button class="b g" id="closeAdmin">Close</button></div>
+    <div id="list"></div>
+  </div>
+</div>
 
-        <div class="p-5 space-y-4 overflow-y-auto flex-1">
-          <div>
-            <label
-              for="guest-list-input"
-              class="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5"
-            >
-              Guest / Family Names
-            </label>
-            <textarea
-              id="guest-list-input"
-              rows="5"
-              placeholder="RAJ KUMAR FAMILY&#10;KASUN PERERA&#10;DILSHAN &amp; FAMILY"
-              class="w-full rounded-xl bg-black/70 border border-white/15 focus:border-[#8BC34A] focus:outline-none p-3 text-xs text-white font-mono"
-            ></textarea>
-            <button
-              id="generate-links-btn"
-              type="button"
-              class="mt-2.5 w-full py-2.5 rounded-xl bg-[#8BC34A] hover:bg-[#9CCC65] text-black font-bold text-xs uppercase tracking-wider transition-colors"
-            >
-              Generate Personalized Links
-            </button>
-          </div>
-
-          <div id="generated-links-container" class="space-y-2"></div>
-        </div>
-      </div>
-    </div>
-
-    <script src="app.js"></script>
-  </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
 </html>
