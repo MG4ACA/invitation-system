@@ -376,9 +376,27 @@
     $("#dirBtn").href = CFG.mapsDirections;
   }
   $("#shield").addEventListener("click", () => { $("#mapwrap").classList.add("live"); $("#shield").remove(); });
-  $$("img[src*='crest']").forEach((im) => im.addEventListener("load", () => {                // mask the shimmer to the real PNG
-    const m = im.parentNode.querySelector(".shimmer"); if (m) m.style.cssText += "-webkit-mask:url(assets/crest-25-years.png) center/100% 100% no-repeat;mask:url(assets/crest-25-years.png) center/100% 100% no-repeat";
-  }));
+  $$("img[src*='crest']").forEach((im) => {
+    const applyMask = () => {
+      const p = im.parentNode;
+      if (p) {
+        p.classList.add("has-img");
+        const m = p.querySelector(".shimmer");
+        if (m) {
+          m.style.webkitMaskImage = "url(assets/crest-25-years.png)";
+          m.style.maskImage = "url(assets/crest-25-years.png)";
+          m.style.webkitMaskSize = "100% 100%";
+          m.style.maskSize = "100% 100%";
+          m.style.webkitMaskRepeat = "no-repeat";
+          m.style.maskRepeat = "no-repeat";
+          m.style.webkitMaskPosition = "center";
+          m.style.maskPosition = "center";
+        }
+      }
+    };
+    if (im.complete) applyMask();
+    else im.addEventListener("load", applyMask);
+  });
 
   /* ---------- 8. Host link generator (?admin=1) ---------- */
   function initAdmin() {
